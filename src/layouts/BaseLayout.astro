@@ -41,8 +41,7 @@ const canonicalURL = canonical || new URL(Astro.url.pathname, Astro.site).toStri
 
     <title>{title}</title>
     <meta name="description" content={description} />
-    <!-- TODO Search Console : décommenter et renseigner le code de vérification.
-    <meta name="google-site-verification" content="XXXXXXXXXX" /> -->
+    <meta name="google-site-verification" content="_gr_xdd34XXK99EcV6xKrHa6MioUXSKq_qiTgI9AaM0" />
     <link rel="canonical" href={canonicalURL} />
 
     <meta name="geo.region" content={`FR-${SITE.departementNum}`} />
@@ -104,11 +103,9 @@ const canonicalURL = canonical || new URL(Astro.url.pathname, Astro.site).toStri
       <script type="application/ld+json" set:html={JSON.stringify(schema)} />
     ))}
 
-    <!-- Google tag (gtag.js) — chargé uniquement après consentement (bandeau cookies RGPD).
-         TODO GA4 : remplacer G-XXXXXXXXXX par le vrai ID de mesure
-         (tant que l'ID est le placeholder, rien ne se charge). -->
+    <!-- Google tag (gtag.js) — chargé uniquement après consentement (bandeau cookies RGPD). -->
     <script is:inline>
-      var SITE_GA_ID = 'G-XXXXXXXXXX';
+      var SITE_GA_ID = 'G-0QQJQV13TL';
       window.siteLoadAnalytics = function () {
         if (window.siteGaLoaded || SITE_GA_ID === 'G-XXXXXXXXXX') return;
         window.siteGaLoaded = true;
