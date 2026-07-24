@@ -18,7 +18,7 @@ Thumbs.db
 
 # Fichiers de travail internes (non nécessaires au site en production)
 _to_delete/
-photos/
-contenu-pages/
+/photos/
+/contenu-pages/
 INFOS-SITE-PROD.md
 projet-build.tar.gz
