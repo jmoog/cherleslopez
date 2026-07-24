@@ -1,0 +1,107 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FilAriane from '../components/FilAriane.astro';
+import { SITE } from '../data/site.ts';
+
+// TODO : remplacer tous les champs [ENTRE CROCHETS] par les vraies
+// informations légales de l'entreprise avant mise en ligne.
+const title = `Mentions légales — ${SITE.nom}`;
+const description =
+  "Mentions légales : éditeur, SIREN, SIRET, TVA, RCS, hébergeur, RGPD et propriété intellectuelle.";
+---
+<BaseLayout title={title} description={description}>
+  <section class="section">
+    <div class="conteneur prose">
+      <FilAriane items={[{ label: 'Accueil', href: '/' }, { label: 'Mentions légales' }]} />
+      <h1>Mentions légales</h1>
+
+      <p>
+        Conformément aux dispositions des articles 6-III et 19 de la Loi n° 2004-575 du 21 juin 2004
+        pour la Confiance dans l'Économie Numérique, dite L.C.E.N., il est porté à la connaissance
+        des utilisateurs et visiteurs du présent site les informations suivantes.
+      </p>
+
+      <h2>1. Informations légales de l'éditeur</h2>
+      <ul>
+        <li><strong>Dénomination :</strong> {SITE.nomLegal}</li>
+        <li><strong>Nom commercial :</strong> {SITE.nom}</li>
+        <li><strong>Forme juridique :</strong> [FORME JURIDIQUE — ex. entrepreneur individuel, SASU, SARL]</li>
+        <li><strong>Siège social :</strong> {SITE.rue}, {SITE.cp} {SITE.ville}, France</li>
+        <li><strong>SIREN :</strong> [000 000 000]</li>
+        <li><strong>SIRET (siège) :</strong> [000 000 000 00000]</li>
+        <li><strong>RCS :</strong> [000 000 000 R.C.S. Ville]</li>
+        <li><strong>Numéro de TVA intracommunautaire :</strong> [FR00000000000]</li>
+        <li><strong>Code APE / NAF :</strong> [00.00X — Libellé de l'activité]</li>
+        <li><strong>Directeur de la publication :</strong> {SITE.dirigeant}</li>
+        <li><strong>Email :</strong> <a href={`mailto:${SITE.email}`}>{SITE.email}</a></li>
+        <li><strong>Téléphone :</strong> <a href={SITE.telHref}>{SITE.tel}</a></li>
+      </ul>
+
+      <h2>2. Hébergeur du site</h2>
+      <p>
+        Le site est hébergé par <strong>[NOM DE L'HÉBERGEUR]</strong> — [adresse complète de
+        l'hébergeur] — <a href="https://www.exemple-hebergeur.fr" rel="noopener" target="_blank">www.exemple-hebergeur.fr</a>.
+      </p>
+
+      <h2>3. Protection des données personnelles (RGPD)</h2>
+      <p>
+        {SITE.nom} s'engage à respecter les dispositions légales en vigueur en matière de protection
+        des données personnelles, notamment la Loi n° 78-17 du 6 janvier 1978 (modifiée) et le
+        Règlement Général sur la Protection des Données (RGPD).
+      </p>
+      <p>
+        <strong>Collecte des données :</strong> les informations personnelles collectées sur le site
+        ne le sont que pour le besoin des services proposés, en particulier via le
+        <a href="/devis-gratuit/">formulaire de demande de devis</a> (nom, téléphone, email, ville
+        et description du projet). Ces données servent uniquement à traiter votre demande et ne sont
+        pas utilisées à d'autres fins.
+      </p>
+      <p>
+        <strong>Droit d'accès et de rectification :</strong> tout utilisateur dispose d'un droit
+        d'accès, de rectification, de suppression et d'opposition aux données personnelles le
+        concernant. Pour l'exercer, veuillez adresser votre demande par email à
+        <a href={`mailto:${SITE.email}`}>{SITE.email}</a> ou par courrier postal, accompagnée d'une
+        copie d'une pièce d'identité.
+      </p>
+      <p>
+        <strong>Absence de diffusion :</strong> aucune information personnelle de l'utilisateur n'est
+        publiée, échangée, transférée, cédée ou vendue à des tiers, sauf en cas de rachat de
+        l'entreprise et de ses actifs.
+      </p>
+
+      <h2>4. Propriété intellectuelle</h2>
+      <p>
+        {SITE.nom} est propriétaire exclusif des droits de propriété intellectuelle ou détient les
+        droits d'usage sur tous les éléments accessibles sur le site (textes, images, graphismes,
+        logo, icônes). Toute reproduction, représentation, modification, publication ou adaptation,
+        totale ou partielle, de ces éléments est interdite, sauf autorisation écrite préalable, et
+        serait constitutive d'une contrefaçon poursuivie conformément au Code de la Propriété
+        Intellectuelle.
+      </p>
+
+      <h2>5. Responsabilité et accessibilité</h2>
+      <p>
+        L'éditeur s'efforce de fournir des informations aussi précises que possible, mais ne saurait
+        garantir leur exactitude ou leur complétude. Le site est par principe accessible 24h/24 et
+        7j/7, sauf interruption, programmée ou non (maintenance, force majeure). L'éditeur ne saurait
+        être tenu responsable d'un dommage résultant d'une indisponibilité du service.
+      </p>
+
+      <h2>6. Liens hypertextes et cookies</h2>
+      <p>
+        <strong>Liens hypertextes :</strong> le site peut contenir des liens vers d'autres sites.
+        {SITE.nom} décline toute responsabilité quant aux contenus des sites externes.
+      </p>
+      <p>
+        <strong>Cookies :</strong> ce site ne dépose aucun cookie publicitaire. Il utilise
+        uniquement un outil de mesure d'audience, <strong>Google&nbsp;Analytics</strong>, destiné à
+        établir des statistiques de fréquentation anonymisées. Conformément aux recommandations de la
+        <a href="https://www.cnil.fr" rel="noopener" target="_blank">CNIL</a>, ces cookies ne sont
+        déposés qu'après votre consentement : un bandeau s'affiche à votre première visite et aucun
+        cookie de mesure d'audience n'est installé tant que vous n'avez pas cliqué sur
+        « Accepter ». Vous pouvez refuser à tout moment ; votre choix est conservé sur votre
+        appareil et peut être modifié en effaçant les données de navigation du site.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

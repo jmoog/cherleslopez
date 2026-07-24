@@ -1,0 +1,7 @@
+---
+import ServicePage from '../components/ServicePage.astro';
+import { getService } from '../data/services.ts';
+const service = getService('pose-et-remplacement-de-gouttiere-31');
+if (!service) throw new Error('Service introuvable : pose-et-remplacement-de-gouttiere-31');
+---
+<ServicePage service={service} />

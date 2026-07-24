@@ -1,0 +1,228 @@
+---
+// ─────────────────────────────────────────────────────────────────────────
+// Gabarit commun des pages SERVICE « [prestation] en Haute-Garonne (31) ».
+// Le contenu vit dans src/data/services.ts ; chaque page src/pages/<slug>.astro
+// importe le service correspondant et le passe à ce composant.
+// ─────────────────────────────────────────────────────────────────────────
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FilAriane from './FilAriane.astro';
+import FlecheRonde from './FlecheRonde.astro';
+import { SITE } from '../data/site.ts';
+import { schemaService } from '../data/schemas.ts';
+import type { ServicePage } from '../data/services.ts';
+import { SERVICES } from '../data/services.ts';
+import Avis from './Avis.astro';
+
+const { service } = Astro.props as { service: ServicePage };
+const slugUrl = `/${service.slug}/`;
+const avisStart = Math.max(0, SERVICES.findIndex((x) => x.slug === service.slug));
+---
+<BaseLayout
+  title={service.title}
+  description={service.description}
+  extraSchemas={[schemaService({ nom: service.h1, description: service.description, slug: slugUrl })]}
+>
+
+  <!-- ── Introduction : entête + photo + texte ─────────────────── -->
+  <section class="section">
+    <div class="conteneur svc__intro">
+      <div class="svc__entete">
+        <FilAriane items={[{ label: 'Accueil', href: '/' }, { label: service.h1 }]} />
+        <h1>{service.h1}</h1>
+        <p class="svc__marque">{service.sousTitre}</p>
+      </div>
+      <img
+        class="svc__intro-img"
+        src={service.introImg.src}
+        alt={service.introImg.alt}
+        width="700"
+        height="525"
+        fetchpriority="high"
+      />
+      <div class="svc__intro-texte">
+        {service.intro.map((p) => <p set:html={p} />)}
+        <div class="svc__actions">
+          <a href={SITE.telHref} class="btn btn--rouge">
+            <svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2.2"/><line x1="11" y1="18.3" x2="13" y2="18.3"/></svg>
+            {SITE.tel}
+          </a>
+          <a href="/devis-gratuit/" class="btn btn--bleu">Devis gratuit<FlecheRonde /></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Sections de contenu (prose ou duo photo/texte) ────────── -->
+  {service.sections.map((sec, i) => (
+    sec.img ? (
+      <section class:list={['section', { 'section--gris': i % 2 === 0 }]}>
+        <div class:list={['conteneur', 'svc__duo', { 'svc__duo--inverse': sec.inverse }]}>
+          <img class="svc__duo-img" src={sec.img.src} alt={sec.img.alt} loading="lazy" width="700" height="525" />
+          <div>
+            <h2>{sec.titre}</h2>
+            {sec.paras?.map((p) => <p set:html={p} />)}
+            {sec.listeTitre && <p class="svc__liste-titre">{sec.listeTitre}</p>}
+            {sec.liste && (
+              <ul class="svc__liste">
+                {sec.liste.map((li) => <li set:html={li} />)}
+              </ul>
+            )}
+          </div>
+        </div>
+      </section>
+    ) : (
+      <section class:list={['section', { 'section--gris': i % 2 === 0 }]}>
+        <div class="conteneur prose">
+          <h2>{sec.titre}</h2>
+          {sec.paras?.map((p) => <p set:html={p} />)}
+          {sec.listeTitre && <p class="svc__liste-titre">{sec.listeTitre}</p>}
+          {sec.liste && (
+            <ul class="svc__liste">
+              {sec.liste.map((li) => <li set:html={li} />)}
+            </ul>
+          )}
+        </div>
+      </section>
+    )
+  ))}
+
+  {service.galerie && (
+    <section class="section section--gris">
+      <div class="conteneur">
+        <h2>{service.galerie.titre}</h2>
+        <div class="svc-galerie">
+          {service.galerie.photos.map((ph) => (
+            <img src={ph.src} alt={ph.alt} loading="lazy" width="700" height="500" />
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- ── Points forts ─────────────────────────────────────────── -->
+  <section class="section">
+    <div class="conteneur prose">
+      <h2>{service.titrePoints ?? 'Pourquoi me confier vos travaux de toiture'}</h2>
+      <ul class="svc__points">
+        {service.points.map((p) => <li>{p}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <Avis start={avisStart} titre="Ce que disent mes clients" />
+
+  <!-- ── CTA final (photo + panneau bleu) ─────────────────────── -->
+  <section class="section">
+    <div class="conteneur">
+      <div class="cta-svc">
+        <img class="cta-svc__img" src={service.ctaImg?.src ?? '/images/photos/placeholder-large.webp'} alt={service.ctaImg?.alt ?? 'Chantier de couverture par Charles Lopez en Haute-Garonne'} loading="lazy" width="1600" height="500" />
+        <div class="cta-svc__panneau">
+          <h2>{service.cta.titre}</h2>
+          <p>{service.cta.texte}</p>
+          <div class="cta-svc__actions">
+            <a href={SITE.telHref} class="btn btn--rouge">
+              <svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2.2"/><line x1="11" y1="18.3" x2="13" y2="18.3"/></svg>
+              {SITE.tel}
+            </a>
+            <a href="/devis-gratuit/" class="btn btn--blanc">Demander mon devis<FlecheRonde /></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .svc__intro {
+    display: grid;
+    gap: 1.6rem;
+    grid-template-areas: "entete" "photo" "texte";
+  }
+  @media (min-width: 980px) {
+    .svc__intro {
+      grid-template-columns: 1.15fr 1fr;
+      grid-template-areas: "entete photo" "texte photo";
+      column-gap: 4rem;
+      align-items: center;
+    }
+  }
+  .svc__entete { grid-area: entete; }
+  .svc__intro-img {
+    grid-area: photo;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--rayon);
+    box-shadow: var(--ombre);
+  }
+  .svc__intro-texte { grid-area: texte; }
+  .svc__intro-texte p { margin-block: 0 1rem; }
+  .svc__entete h1 { font-size: clamp(1.55rem, 4.6vw, 2.4rem); line-height: 1.15; }
+  .svc__marque {
+    color: var(--rouge);
+    font-weight: 800;
+    font-size: clamp(1.1rem, 3vw, 1.5rem);
+    line-height: 1.15;
+    margin: 0.4rem 0 0;
+  }
+  .svc__actions { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1.4rem; }
+
+  .svc__duo { display: grid; gap: 2rem; align-items: center; }
+  @media (min-width: 900px) {
+    .svc__duo { grid-template-columns: 1fr 1.2fr; gap: 3.5rem; }
+    .svc__duo--inverse { grid-template-columns: 1.2fr 1fr; }
+  }
+  .svc__duo h2 { text-align: left; }
+  .svc__duo p { margin-block: 1rem; }
+  .svc__duo-img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--rayon);
+    box-shadow: var(--ombre);
+  }
+  @media (max-width: 900px) {
+    .svc__duo--inverse .svc__duo-img { order: -1; }
+  }
+
+  .svc__liste-titre { font-weight: 600; margin-bottom: 0.4rem; }
+  .svc__liste { display: grid; gap: 0.5rem; padding-left: 0; list-style: none; }
+  .svc__liste li { padding-left: 1.6em; position: relative; }
+  .svc__liste li::before { content: "✓"; position: absolute; left: 0; color: var(--rouge); font-weight: 800; }
+
+  .svc__points { list-style: none; padding: 0; display: grid; gap: 0.5rem; }
+  .svc__points li { padding-left: 1.6em; position: relative; }
+  .svc__points li::before { content: "✓"; position: absolute; left: 0; color: var(--rouge); font-weight: 800; }
+
+  .cta-svc {
+    display: grid;
+    grid-template-columns: 1fr;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--ombre-forte);
+  }
+  @media (min-width: 800px) { .cta-svc { grid-template-columns: 1fr 1fr; } }
+  .cta-svc__img { width: 100%; height: 100%; min-height: 220px; object-fit: cover; }
+  .cta-svc__panneau {
+    background: var(--bleu);
+    color: var(--blanc);
+    padding: clamp(1.8rem, 4vw, 3rem);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 1.1rem;
+  }
+  .cta-svc__panneau h2 { color: var(--blanc); text-align: left; }
+  .cta-svc__panneau p { color: rgba(255, 255, 255, 0.9); margin: 0; max-width: 45ch; }
+  .cta-svc__actions { display: flex; flex-wrap: wrap; gap: 0.9rem; }
+  @media (max-width: 800px) {
+    .cta-svc__panneau { align-items: center; text-align: center; }
+    .cta-svc__panneau h2 { font-size: clamp(1.3rem, 5.4vw, 1.7rem); line-height: 1.2; text-wrap: balance; }
+    .cta-svc__panneau .btn { width: auto; max-width: 100%; justify-content: center; }
+    .cta-svc__actions { justify-content: center; width: 100%; }
+  }
+
+  .svc-galerie { display: grid; gap: 1.2rem; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .svc-galerie img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--rayon); box-shadow: var(--ombre); }
+</style>

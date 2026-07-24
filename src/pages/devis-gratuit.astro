@@ -1,0 +1,304 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FilAriane from '../components/FilAriane.astro';
+import { SITE } from '../data/site.ts';
+import Avis from '../components/Avis.astro';
+
+// Page rendue en statique : la clé site Turnstile (publique) est figée au build.
+export const prerender = true;
+const turnstileSiteKey = process.env.TURNSTILE_SITE_KEY || '';
+
+const title = 'Devis gratuit — Charles Lopez, couvreur en Haute-Garonne (31)';
+const description =
+  'Décrivez votre projet ou votre urgence et recevez un chiffrage détaillé poste par poste, sans engagement. Réponse rapide, déplacement offert.';
+
+// Options du <select> — garder les values synchronisées avec
+// PRESTATION_LABELS dans src/pages/api/devis.ts.
+const prestations = [
+  { value: 'renovation',      label: 'Rénovation de toiture' },
+  { value: 'reparation',      label: 'Réparation de toiture' },
+  { value: 'gouttieres',      label: 'Pose / remplacement de gouttières' },
+  { value: 'nettoyage',       label: 'Nettoyage & démoussage' },
+  { value: 'etancheite',      label: 'Étanchéité de toiture' },
+  { value: 'recherche-fuite', label: 'Recherche de fuite' },
+  { value: 'traitement',      label: 'Traitement de toiture' },
+  { value: 'autre',           label: 'Autre / à préciser' },
+];
+
+// Galerie de réalisations (6 photos de chantiers).
+const galerie = [
+  { img: '/images/photos/placeholder-carte-1.webp', alt: 'Rénovation de toiture en Haute-Garonne' },
+  { img: '/images/photos/placeholder-carte-2.webp', alt: 'Réparation de toiture par Charles Lopez' },
+  { img: '/images/photos/placeholder-carte-3.webp', alt: 'Pose de gouttières en Haute-Garonne' },
+  { img: '/images/photos/placeholder-carte-4.webp', alt: 'Nettoyage et démoussage de toiture' },
+  { img: '/images/photos/placeholder-carte-5.webp', alt: 'Étanchéité de toiture' },
+  { img: '/images/photos/placeholder-carte-6.webp', alt: 'Traitement de toiture' },
+];
+---
+<BaseLayout title={title} description={description}>
+  <!-- ── Accroche + formulaire ────────────────────────────────── -->
+  <section class="section devis">
+    <div class="conteneur devis__grille">
+
+      <div class="devis__texte">
+        <FilAriane items={[{ label: 'Accueil', href: '/' }, { label: 'Devis gratuit' }]} />
+        <h1>Devis gratuit pour vos travaux de toiture</h1>
+        <p class="devis__sous-titre">{SITE.nom} — Artisan couvreur en Haute-Garonne (31)</p>
+        <p>
+          Vous avez des travaux à prévoir, un ouvrage à entretenir ou simplement besoin d’un avis ?
+          Décrivez-nous votre besoin et nous vous rappelons rapidement. Nos devis et déplacements
+          sont <strong>gratuits et sans engagement</strong>.
+        </p>
+        <ul class="devis__points">
+          <li>Devis détaillé poste par poste</li>
+          <li>Réponse rapide, urgences traitées</li>
+          <li>Garantie décennale et responsabilité civile professionnelle</li>
+        </ul>
+
+        <ul class="devis__coordonnees">
+          <li>
+            <svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2.2"/><line x1="11" y1="18.3" x2="13" y2="18.3"/></svg>
+            <a href={SITE.telHref}><strong>{SITE.tel}</strong></a>
+          </li>
+          <li>
+            <svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2.2"/><line x1="11" y1="18.3" x2="13" y2="18.3"/></svg>
+            <a href={SITE.telFixeHref}>{SITE.telFixe}</a>
+          </li>
+          <li>
+            <svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span>{SITE.rue}<br />{SITE.cp} {SITE.ville}</span>
+          </li>
+        </ul>
+
+        <div class="devis__carte">
+          <iframe
+            title={`Localisation de ${SITE.nom} à ${SITE.ville}`}
+            src={`https://www.openstreetmap.org/export/embed.html?bbox=${SITE.geo.lng - 0.02}%2C${SITE.geo.lat - 0.01}%2C${SITE.geo.lng + 0.02}%2C${SITE.geo.lat + 0.01}&layer=mapnik&marker=${SITE.geo.lat}%2C${SITE.geo.lng}`}
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
+          <a class="devis__carte-lien" href={`https://www.openstreetmap.org/?mlat=${SITE.geo.lat}&mlon=${SITE.geo.lng}#map=15/${SITE.geo.lat}/${SITE.geo.lng}`} target="_blank" rel="noopener">Voir en plein écran</a>
+        </div>
+      </div>
+
+      <div class="carte devis__formulaire">
+        <h2>Décrivez votre besoin</h2>
+        <p class="devis__formulaire-intro">Quelques questions rapides pour vous rappeler avec un premier diagnostic.</p>
+
+        {turnstileSiteKey && (
+          <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer is:inline></script>
+        )}
+
+        <form id="devis-form" name="devis" method="POST" action="/api/devis/">
+          <p class="hp" aria-hidden="true">
+            <label>Ne pas remplir <input name="website" tabindex="-1" autocomplete="off" /></label>
+          </p>
+          <input type="hidden" name="ts" id="f-ts" value="" />
+
+          <div class="champ">
+            <label for="f-nom">Votre nom</label>
+            <input id="f-nom" type="text" name="nom" required autocomplete="name" placeholder="Votre nom et prénom" />
+          </div>
+
+          <div class="champ champ--duo">
+            <div>
+              <label for="f-tel">Téléphone</label>
+              <input id="f-tel" type="tel" name="tel" required autocomplete="tel" placeholder="Ex. 06 11 22 33 44" />
+            </div>
+            <div>
+              <label for="f-email">Votre email</label>
+              <input id="f-email" type="email" name="email" required autocomplete="email" placeholder="votre@email.fr" />
+            </div>
+          </div>
+
+          <div class="champ">
+            <label for="f-ville">Ville du chantier</label>
+            <input id="f-ville" type="text" name="ville" required placeholder="Toulouse, Blagnac, Colomiers…" />
+          </div>
+
+          <div class="champ">
+            <label for="f-prestation">Type d'intervention</label>
+            <select id="f-prestation" name="prestation" required>
+              <option value="">— Sélectionnez une prestation —</option>
+              {prestations.map((p) => (
+                <option value={p.value}>{p.label}</option>
+              ))}
+            </select>
+          </div>
+
+          <div class="champ">
+            <label for="f-message">Précisez votre demande</label>
+            <textarea id="f-message" name="message" rows="4" placeholder="Ex. : fuite au niveau de la cheminée, tuiles envolées, toiture à nettoyer…"></textarea>
+          </div>
+
+          {turnstileSiteKey && (
+            <div class="cf-turnstile" data-sitekey={turnstileSiteKey} data-theme="light" data-language="fr"></div>
+          )}
+
+          <button type="submit" id="devis-submit" class="btn btn--rouge devis__envoyer">
+            Envoyer ma demande de devis
+          </button>
+          <p id="devis-status" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Galerie de réalisations ──────────────────────────────── -->
+  <section class="section">
+    <div class="conteneur">
+      <h2>Nos réalisations</h2>
+      <div class="devis__galerie">
+        {galerie.map((g) => (
+          <img class="devis__galerie-img" src={g.img} alt={g.alt} loading="lazy" width="700" height="470" />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <Avis start={5} titre="Ils m’ont fait confiance" />
+
+  <!-- ── Contenu éditorial ────────────────────────────────────── -->
+  <section class="section section--gris">
+    <div class="conteneur prose">
+      <h2>{SITE.nom} : la qualité avant tout</h2>
+      <p>
+        Charles Lopez est un artisan couvreur installé à {SITE.ville}, dans
+        la {SITE.departement}. Fort de plus de 15 ans d’expérience, il met son savoir-faire au
+        service de la durabilité et de l’esthétique de votre toiture. Chaque devis est établi
+        gratuitement, après une évaluation précise de vos besoins, sans engagement de votre part.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .devis__grille { display: grid; gap: 3rem; align-items: start; }
+  @media (min-width: 980px) {
+    .devis__grille { grid-template-columns: 1fr 1fr; gap: 4rem; }
+  }
+  .devis__sous-titre { font-size: 1.1rem; color: var(--gris-700); font-weight: 600; margin-block: 0.8rem 1rem; }
+  .devis__points { list-style: none; padding: 0; margin-block: 1.2rem; display: grid; gap: 0.5rem; }
+  .devis__points li { padding-left: 1.6em; position: relative; }
+  .devis__points li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--rouge);
+    font-weight: 800;
+  }
+  .devis__coordonnees { list-style: none; padding: 0; margin-top: 1.6rem; display: grid; gap: 0.6rem; }
+  .devis__coordonnees li { display: flex; align-items: center; gap: 0.6em; }
+  .devis__coordonnees .icone { color: var(--bleu); flex-shrink: 0; }
+
+  /* Carte OpenStreetMap */
+  .devis__carte { margin-top: 1.6rem; }
+  .devis__carte iframe {
+    width: 100%;
+    height: 280px;
+    border: 1px solid var(--gris-200);
+    border-radius: var(--rayon);
+    display: block;
+  }
+  .devis__carte-lien {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--rouge-fonce);
+  }
+
+  /* Galerie de réalisations : 2 colonnes mobile, 3 colonnes desktop */
+  .devis__galerie {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  @media (min-width: 700px) {
+    .devis__galerie { grid-template-columns: repeat(3, 1fr); }
+  }
+  .devis__galerie-img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--rayon);
+    box-shadow: var(--ombre);
+  }
+
+  .devis__formulaire { padding: 2rem; }
+  .devis__formulaire:hover { transform: none; }
+  .devis__formulaire h2 { font-size: 1.3rem; }
+  .devis__formulaire-intro { color: var(--gris-500); font-size: 0.92rem; margin-block: 0.3rem 1.5rem; }
+  .hp { position: absolute; left: -9999px; }
+  .champ { margin-bottom: 1.1rem; }
+  .champ--duo { display: grid; gap: 1.1rem; }
+  @media (min-width: 560px) { .champ--duo { grid-template-columns: 1fr 1fr; } }
+  .champ label { display: block; font-weight: 600; font-size: 0.92rem; margin-bottom: 0.35rem; color: var(--gris-700); }
+  .champ input,
+  .champ select,
+  .champ textarea {
+    width: 100%;
+    padding: 0.7em 1em;
+    border: 1px solid var(--gris-200);
+    border-radius: var(--rayon);
+    font: inherit;
+    /* 16px minimum : en dessous, iOS/Android zooment automatiquement sur le
+       champ au focus (comportement indésirable). Ne jamais descendre sous 1rem. */
+    font-size: 1rem;
+    color: var(--noir);
+    background: var(--blanc);
+    transition: border-color var(--transition), box-shadow var(--transition);
+  }
+  .champ input:focus,
+  .champ select:focus,
+  .champ textarea:focus {
+    outline: none;
+    border-color: var(--rouge);
+    box-shadow: 0 0 0 3px rgba(232, 90, 39, 0.22);
+  }
+  .champ textarea { resize: vertical; min-height: 110px; }
+  .cf-turnstile { margin-bottom: 1.1rem; }
+  .devis__envoyer { width: 100%; }
+  .devis__envoyer:disabled { opacity: 0.5; cursor: not-allowed; }
+  #devis-status { font-size: 0.92rem; margin-top: 0.8rem; }
+</style>
+
+<script is:inline>
+(function () {
+  var form = document.getElementById('devis-form');
+  if (!form) return;
+  var status = document.getElementById('devis-status');
+  var submit = document.getElementById('devis-submit');
+  var tsField = document.getElementById('f-ts');
+  if (tsField) tsField.value = String(Date.now());
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    submit.disabled = true;
+    status.style.color = '';
+    status.textContent = 'Envoi en cours…';
+    try {
+      var fd = new FormData(form);
+      var payload = {};
+      fd.forEach(function (v, k) { payload[k] = v; });
+      var res = await fetch('/api/devis/', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', 'accept': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      var data = await res.json().catch(function () { return {}; });
+      if (res.ok && data.ok) {
+        window.location.href = '/merci/';
+        return;
+      }
+      status.style.color = '#c0392b';
+      status.textContent = data.error || 'Une erreur est survenue. Merci de réessayer ou de nous appeler.';
+      submit.disabled = false;
+    } catch (err) {
+      status.style.color = '#c0392b';
+      status.textContent = 'Erreur réseau. Merci de réessayer ou de nous appeler.';
+      submit.disabled = false;
+    }
+  });
+})();
+</script>

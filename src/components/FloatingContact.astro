@@ -1,0 +1,64 @@
+---
+// Barre de contact fixe en bas d'écran sur mobile : appel, devis.
+import { SITE } from '../data/site.ts';
+---
+<div class="contact-flottant" role="complementary" aria-label="Contact rapide">
+  <a href={SITE.telHref} class="contact-flottant__btn contact-flottant__btn--appel">
+    <svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2.2"/><line x1="11" y1="18.3" x2="13" y2="18.3"/></svg>
+    Appeler
+  </a>
+  <a href="/devis-gratuit/" class="contact-flottant__btn contact-flottant__btn--devis">
+    <svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 15l2 2 4-4"/></svg>
+    Devis gratuit
+  </a>
+</div>
+
+<style>
+  .contact-flottant {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 60;
+    display: none;
+    grid-template-columns: 1fr 1.3fr;
+    box-shadow: 0 -4px 16px rgba(15, 23, 30, 0.18);
+    transform: translateY(110%);
+    transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
+  }
+  .contact-flottant--visible { transform: translateY(0); }
+  .contact-flottant__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45em;
+    padding: 0.9em 0.5em;
+    font-weight: 700;
+    font-size: 0.92rem;
+    text-decoration: none;
+    color: var(--blanc);
+  }
+  .contact-flottant__btn:hover { color: var(--blanc); }
+  .contact-flottant__btn--appel { background: var(--bleu); }
+  .contact-flottant__btn--whatsapp { background: #1faa54; }
+  .contact-flottant__btn--devis { background: var(--rouge-fonce); } /* texte blanc : AA 4.9:1 */
+
+  @media (max-width: 980px) {
+    .contact-flottant { display: grid; }
+    :global(body) { padding-bottom: calc(56px + env(safe-area-inset-bottom)); }
+    .contact-flottant { padding-bottom: env(safe-area-inset-bottom); }
+  }
+</style>
+
+<script>
+  const barre = document.querySelector('.contact-flottant');
+  let tickCF = false;
+  window.addEventListener('scroll', () => {
+    if (tickCF) return;
+    tickCF = true;
+    requestAnimationFrame(() => {
+      barre?.classList.toggle('contact-flottant--visible', window.scrollY > 450);
+      tickCF = false;
+    });
+  }, { passive: true });
+</script>

@@ -1,0 +1,282 @@
+---
+// ─────────────────────────────────────────────────────────────────────────
+// Gabarit commun des pages villes « [Métier] à [Ville] ».
+// Le contenu de chaque page vit dans src/data/villes/[slug].ts ;
+// ajouter une ville = ajouter son fichier de données + l'importer
+// dans src/data/villes/index.ts (+ LIENS_VILLES dans zones.ts). URL : /zone-[slug]/.
+// ─────────────────────────────────────────────────────────────────────────
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FilAriane from '../components/FilAriane.astro';
+import FlecheRonde from '../components/FlecheRonde.astro';
+import { SITE } from '../data/site.ts';
+import { schemaVille } from '../data/schemas.ts';
+import { VILLES } from '../data/villes/index.ts';
+import Avis from '../components/Avis.astro';
+import type { VillePage } from '../data/villes/types.ts';
+
+export function getStaticPaths() {
+  return VILLES.map((v) => ({ params: { ville: v.slug }, props: { page: v } }));
+}
+
+const { page } = Astro.props as { page: VillePage };
+const avisStart = Math.max(0, VILLES.findIndex((x) => x.slug === page.slug)) + 3;
+
+const ariane = page.hub
+  ? [
+      { label: 'Accueil', href: '/' },
+      { label: page.hub.label, href: page.hub.href },
+      { label: page.ville },
+    ]
+  : [{ label: 'Accueil', href: '/' }, { label: `Couvreur à ${page.ville}` }];
+---
+<BaseLayout
+  title={page.title}
+  description={page.description}
+  extraSchemas={[
+    schemaVille({
+      ville: page.ville,
+      dep: page.dep,
+      description: page.description,
+      slug: `/${page.slug}/`,
+    }),
+  ]}
+>
+
+  <!-- ── Introduction : entête + photo + texte ─────────────────── -->
+  <section class="section">
+    <div class="conteneur zone__intro">
+      <div class="zone__entete">
+        <FilAriane items={ariane} />
+        <h1>{page.h1}</h1>
+        <p class="zone__marque">{SITE.nom}</p>
+      </div>
+      <img
+        class="zone__intro-img"
+        src={page.imgIntro.src}
+        alt={page.imgIntro.alt}
+        width="700"
+        height="525"
+        fetchpriority="high"
+      />
+      <div class="zone__intro-texte">
+        {page.intro.map((p) => <p set:html={p} />)}
+        <ul class="zone__points">
+          <li><span class="zone__check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 12.5l2.5 2.5 5-6"/></svg></span> Couvreur de père en fils</li>
+          <li><span class="zone__check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 12.5l2.5 2.5 5-6"/></svg></span> + de 15 ans d’expérience</li>
+          <li><span class="zone__check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 12.5l2.5 2.5 5-6"/></svg></span> Garantie décennale</li>
+        </ul>
+        <div class="zone__badges">
+          <img src="/images/badges/garantie-decennale.webp" alt="Garantie décennale et responsabilité civile professionnelle" height="52" width="151" loading="lazy" />
+          <img src="/images/badges/chambre-des-metiers.webp" alt="Inscrit à la Chambre des Métiers de la Haute-Garonne" height="52" width="76" loading="lazy" />
+        </div>
+        <div class="zone__actions">
+          <a href={SITE.telHref} class="btn btn--rouge">
+            <svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2.2"/><line x1="11" y1="18.3" x2="13" y2="18.3"/></svg>
+            {SITE.tel}
+          </a>
+          <a href="/devis-gratuit/" class="btn btn--bleu">Devis gratuit<FlecheRonde /></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Prestations sur la ville (cartes illustrées, façon accueil) ── -->
+  <section class="section section--gris">
+    <div class="conteneur">
+      <h2>{page.prestations.titre}</h2>
+      <p class="zone-presta__intro" set:html={page.prestations.intro} />
+      <div class="zone-presta__grille">
+        {page.prestations.cartes.map((c) => (
+          <div class="carte zone-presta__carte">
+            <img
+              class="zone-presta__img"
+              src={c.img.src}
+              alt={c.img.alt}
+              loading="lazy"
+              width="700"
+              height="470"
+            />
+            <div class="zone-presta__corps">
+              <h3>{c.titre}</h3>
+              <p set:html={c.texte} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── L'angle propre à la ville (photo + texte) ────────────── -->
+  <section class="section">
+    <div class:list={['conteneur', 'zone__duo', { 'zone__duo--inverse': page.angle.inverse }]}>
+      <img
+        class="zone__duo-img"
+        src={page.angle.img.src}
+        alt={page.angle.img.alt}
+        loading="lazy"
+        width="1024"
+        height="768"
+      />
+      <div>
+        <h2>{page.angle.titre}</h2>
+        {page.angle.paras.map((p) => <p set:html={p} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Secteur : communes voisines ──────────────────────────── -->
+  <section class="section section--gris">
+    <div class="conteneur prose">
+      <h2>{page.secteur.titre}</h2>
+      {page.secteur.paras.map((p) => <p set:html={p} />)}
+    </div>
+  </section>
+
+  <Avis start={avisStart} titre={`Avis clients en Haute-Garonne`} />
+
+  <!-- ── CTA final (photo + panneau bleu) ─────────────────────── -->
+  <section class="section">
+    <div class="conteneur">
+      <div class="cta-zone">
+        <img
+          class="cta-zone__img"
+          src="/images/photos/placeholder-photo-1.webp"
+          alt={`Charles Lopez, couvreur près de ${page.ville}`}
+          loading="lazy"
+          width="1024"
+          height="768"
+        />
+        <div class="cta-zone__panneau">
+          <h2>{page.cta.titre}</h2>
+          <p>{page.cta.texte}</p>
+          <div class="cta-zone__actions">
+            <a href={SITE.telHref} class="btn btn--rouge">
+              <svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2.2"/><line x1="11" y1="18.3" x2="13" y2="18.3"/></svg>
+              {SITE.tel}
+            </a>
+            <a href="/devis-gratuit/" class="btn btn--blanc">Demander mon devis<FlecheRonde /></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .zone__intro {
+    display: grid;
+    gap: 1.6rem;
+    grid-template-areas:
+      "entete"
+      "photo"
+      "texte";
+  }
+  @media (min-width: 980px) {
+    .zone__intro {
+      grid-template-columns: 1.15fr 1fr;
+      grid-template-areas:
+        "entete photo"
+        "texte photo";
+      column-gap: 4rem;
+      align-items: center;
+    }
+  }
+  .zone__entete { grid-area: entete; }
+  .zone__intro-img {
+    grid-area: photo;
+    max-width: 100%;
+    max-height: 540px;
+    width: auto;
+    height: auto;
+    display: block;
+    margin-inline: auto;
+    border-radius: 20px;
+    box-shadow: var(--ombre-forte);
+    align-self: center;
+    justify-self: center;
+  }
+  .zone__intro-texte { grid-area: texte; }
+  .zone__intro-texte p { margin-block: 0 1rem; }
+  .zone__entete h1 { font-size: clamp(1.55rem, 4.6vw, 2.4rem); line-height: 1.15; }
+  .zone__marque {
+    color: var(--rouge);
+    font-weight: 800;
+    font-size: clamp(1.35rem, 4vw, 2rem);
+    line-height: 1.1;
+    margin: 0.4rem 0 0;
+  }
+  .zone__actions { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1.4rem; }
+
+  /* Cartes prestations illustrées — même dessin que l'accueil */
+  .zone-presta__intro { max-width: 70ch; color: var(--gris-700); margin-inline: auto; margin-bottom: 1.8rem; }
+  .zone-presta__grille {
+    display: grid;
+    gap: 1.4rem;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+  @media (min-width: 900px) {
+    .zone-presta__grille { grid-template-columns: repeat(3, 1fr); }
+  }
+  .zone-presta__carte { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
+  .zone-presta__img { width: 100%; height: 190px; object-fit: cover; }
+  .zone-presta__corps { padding: 1.3rem 1.4rem 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+  .zone-presta__corps h3 { color: var(--bleu); }
+  .zone-presta__corps p { color: var(--gris-700); margin: 0; }
+
+  .zone__duo { display: grid; gap: 2rem; align-items: center; }
+  @media (min-width: 900px) {
+    .zone__duo { grid-template-columns: 1fr 1.2fr; gap: 3.5rem; }
+    .zone__duo--inverse { grid-template-columns: 1.2fr 1fr; }
+  }
+  .zone__duo h2 { text-align: left; }
+  .zone__duo p { margin-block: 1rem; }
+  .zone__duo-img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--rayon);
+    box-shadow: var(--ombre);
+  }
+  @media (max-width: 900px) {
+    .zone__duo--inverse .zone__duo-img { order: -1; }
+  }
+
+  .cta-zone {
+    display: grid;
+    grid-template-columns: 1fr;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--ombre-forte);
+  }
+  @media (min-width: 800px) {
+    .cta-zone { grid-template-columns: 1fr 1fr; }
+  }
+  .cta-zone__img { width: 100%; height: 100%; min-height: 220px; object-fit: cover; }
+  .cta-zone__panneau {
+    background: var(--bleu);
+    color: var(--blanc);
+    padding: clamp(1.8rem, 4vw, 3rem);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 1.1rem;
+  }
+  .cta-zone__panneau h2 { color: var(--blanc); text-align: left; }
+  .cta-zone__panneau p { color: rgba(255, 255, 255, 0.9); margin: 0; max-width: 45ch; }
+  .cta-zone__actions { display: flex; flex-wrap: wrap; gap: 0.9rem; }
+  @media (max-width: 800px) {
+    .cta-zone__panneau { align-items: center; text-align: center; }
+    .cta-zone__panneau h2 { font-size: clamp(1.3rem, 5.4vw, 1.7rem); line-height: 1.2; text-wrap: balance; }
+    .cta-zone__panneau .btn { width: auto; max-width: 100%; justify-content: center; }
+    .cta-zone__actions { justify-content: center; width: 100%; }
+  }
+
+  /* Hero ville façon accueil : arguments + badges */
+  .zone__points { list-style: none; padding: 0; margin: 1.4rem 0; display: grid; gap: 0.7rem; }
+  .zone__points li { display: flex; align-items: center; gap: 0.7rem; font-weight: 600; color: var(--bleu); }
+  .zone__check { color: var(--rouge); flex-shrink: 0; line-height: 0; }
+  .zone__check svg { width: 26px; height: 26px; }
+  .zone__badges { display: flex; align-items: center; gap: 1.2rem; margin-bottom: 1.4rem; flex-wrap: wrap; }
+  .zone__badges img { height: 52px; width: auto; }
+</style>

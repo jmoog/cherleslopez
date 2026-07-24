@@ -1,0 +1,116 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FilAriane from '../components/FilAriane.astro';
+import { SITE } from '../data/site.ts';
+
+const title = 'Plan du site — Charles Lopez, couvreur en Haute-Garonne (31)';
+const description =
+  'Retrouvez toutes les pages du site : prestations, zones d’intervention ville par ville, devis gratuit et informations pratiques.';
+
+// Rubriques du plan de site : un lien + une phrase de description par page.
+// À compléter au fil de la création des pages.
+const rubriques = [
+  {
+    titre: 'Nos prestations de couverture',
+    intro:
+      'Charles Lopez couvre l’ensemble des travaux de toiture en Haute-Garonne, de l’entretien courant à la rénovation complète.',
+    pages: [
+      { href: '/renovation-de-toiture-en-haute-garonne-31/', label: 'Rénovation de toiture', texte: 'remise à neuf des toitures anciennes ou abîmées, charpente et zinguerie comprises.' },
+      { href: '/reparation-de-toiture-en-haute-garonne-31/', label: 'Réparation de toiture', texte: 'tuiles, faîtage, fuites : une intervention rapide avant que les dégâts ne s’aggravent.' },
+      { href: '/pose-et-remplacement-de-gouttiere-31/', label: 'Pose & remplacement de gouttières', texte: 'aluminium, zinc, PVC ou cuivre, pour protéger vos murs et vos fondations.' },
+      { href: '/nettoyage-de-toiture-en-haute-garonne-31/', label: 'Nettoyage & démoussage', texte: 'démoussage, brossage et traitement hydrofuge pour prolonger la vie du toit.' },
+      { href: '/etancheite-de-toiture-en-haute-garonne-31/', label: 'Étanchéité de toiture', texte: 'traitement des points faibles, en pente comme en toiture-terrasse.' },
+      { href: '/recherche-de-fuite-de-toiture-en-haute-garonne-31/', label: 'Recherche de fuite', texte: 'localisation précise de l’infiltration puis réparation durable.' },
+      { href: '/traitement-de-toiture-en-haute-garonne-31/', label: 'Traitement de toiture', texte: 'hydrofuge, anti-mousse et anti-UV pour protéger et embellir votre couverture.' },
+    ],
+  },
+  {
+    titre: 'Où intervient Charles Lopez : nos zones, ville par ville',
+    intro:
+      'Basé à Cornebarrieu, Charles Lopez intervient sur toute la Haute-Garonne et particulièrement dans le nord-ouest toulousain.',
+    pages: [
+      { href: '/couvreur-a-toulouse-31000/', label: 'Couvreur à Toulouse (31000)', texte: 'la ville rose et tous ses quartiers.' },
+      { href: '/blagnac/', label: 'Couvreur à Blagnac (31700)', texte: 'Andromède, Centre, Grand Noble, Odyssud…' },
+      { href: '/colomiers/', label: 'Couvreur à Colomiers (31770)', texte: 'la deuxième ville du département.' },
+      { href: '/beauzelle/', label: 'Couvreur à Beauzelle (31700)', texte: 'spécialiste des toitures en tuiles terre cuite.' },
+      { href: '/aussonne/', label: 'Couvreur à Aussonne (31840)', texte: 'entretien, réparation et urgences.' },
+      { href: '/mondonville-31700/', label: 'Couvreur à Mondonville (31700)', texte: 'interventions dans toute la commune.' },
+      { href: '/pibrac/', label: 'Couvreur à Pibrac (31820)', texte: 'tous les quartiers de la ville.' },
+      { href: '/daux/', label: 'Couvreur à Daux (31700)', texte: 'couvreur zingueur de proximité.' },
+      { href: '/merville/', label: 'Couvreur à Merville (31330)', texte: 'tuiles terre cuite, canal et romane.' },
+      { href: '/launac/', label: 'Couvreur à Launac (31330)', texte: 'diagnostic gratuit de l’usure de la toiture.' },
+      { href: '/saint-paul-sur-save/', label: 'Couvreur à Saint-Paul-sur-Save (31530)', texte: 'gamme complète de travaux de toiture.' },
+    ],
+  },
+  {
+    titre: 'Nous contacter et informations pratiques',
+    intro:
+      'Pour décrire votre projet ou en savoir plus sur l’entreprise.',
+    pages: [
+      { href: '/', label: 'Accueil', texte: 'qui est Charles Lopez, ses prestations et sa zone d’intervention.' },
+      { href: '/devis-gratuit/', label: 'Devis gratuit', texte: 'décrivez votre besoin, réponse rapide — déplacement offert, sans engagement.' },
+      { href: '/mentions-legales/', label: 'Mentions légales', texte: 'informations sur l’éditeur du site et la gestion de vos données.' },
+    ],
+  },
+];
+---
+<BaseLayout title={title} description={description}>
+  <section class="section">
+    <div class="conteneur plan__conteneur">
+      <FilAriane items={[{ label: 'Accueil', href: '/' }, { label: 'Plan du site' }]} />
+      <h1>Plan du site</h1>
+      <p class="plan__marque">{SITE.nom}</p>
+      <p class="plan__intro">
+        Toutes les pages du site, réunies au même endroit et classées par besoin. Si vous ne
+        savez pas par où commencer, la page <a href="/devis-gratuit/">devis gratuit</a> est le
+        chemin le plus court — décrivez votre situation, nous vous orientons.
+      </p>
+
+      {rubriques.map((r) => (
+        <section class="plan__rubrique">
+          <h2>{r.titre}</h2>
+          <p class="plan__rubrique-intro">{r.intro}</p>
+          <ul class="plan__liens">
+            {r.pages.map((p) => (
+              <li>
+                <a href={p.href}>{p.label}</a> — {p.texte}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .plan__conteneur { max-width: 46rem; }
+  .plan__marque {
+    color: var(--rouge);
+    font-weight: 800;
+    font-size: clamp(1.2rem, 3vw, 1.5rem);
+    margin: 0.4rem 0 0;
+  }
+  .plan__intro { margin-block: 1.2rem 2.5rem; color: var(--gris-700); }
+
+  .plan__rubrique { margin-bottom: 2.5rem; }
+  .plan__rubrique h2 {
+    text-align: left;
+    font-size: 1.25rem;
+    color: var(--bleu);
+    padding-bottom: 0.4rem;
+    border-bottom: 3px solid var(--rouge);
+    display: inline-block;
+  }
+  .plan__rubrique-intro { color: var(--gris-700); margin-block: 0.8rem 1rem; }
+  .plan__liens { list-style: none; padding: 0; display: grid; gap: 0.6rem; }
+  .plan__liens li { padding-left: 1.4em; position: relative; color: var(--gris-700); }
+  .plan__liens li::before {
+    content: "›";
+    position: absolute;
+    left: 0.2em;
+    color: var(--rouge);
+    font-weight: 800;
+  }
+  .plan__liens a { font-weight: 600; }
+</style>

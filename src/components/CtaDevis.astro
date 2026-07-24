@@ -1,0 +1,72 @@
+---
+// Bandeau CTA devis : panneau pleine largeur réutilisable sur les pages.
+import { SITE } from '../data/site.ts';
+import FlecheRonde from './FlecheRonde.astro';
+
+export interface Props {
+  titre?: string;
+}
+const { titre = 'Contactez votre artisan' } = Astro.props;
+---
+<section class="cta-devis">
+  <div class="conteneur">
+    <div class="cta-devis__panneau">
+      <h2>{titre}</h2>
+      <p class="cta-devis__texte">
+        Un projet de toiture en Haute-Garonne ?
+        J'interviens à {SITE.ville} et dans tout le {SITE.departement} ({SITE.departementNum}),
+        sed do eiusmod tempor incididunt ut labore. Déplacement, conseil et devis détaillé gratuits, sans engagement.
+      </p>
+      <ul>
+        <li>Devis gratuit et sans engagement.</li>
+        <li>Consectetur adipiscing elit, sed do eiusmod.</li>
+        <li>Garantie décennale.</li>
+      </ul>
+      <div class="cta-devis__actions">
+        <a href={SITE.telHref} class="btn btn--rouge">
+          <svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2.2"/><line x1="11" y1="18.3" x2="13" y2="18.3"/></svg>
+          {SITE.tel}
+        </a>
+        <a href="/devis-gratuit/" class="btn btn--blanc">Devis gratuit<FlecheRonde /></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-devis { padding-block: clamp(2.5rem, 5vw, 4rem); }
+  .cta-devis__panneau {
+    background: var(--bleu);
+    color: var(--blanc);
+    border-radius: var(--rayon);
+    box-shadow: var(--ombre-forte);
+    padding: clamp(2rem, 5vw, 4rem);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    text-align: left;
+    gap: 1.4rem;
+  }
+  .cta-devis__panneau h2 { color: var(--blanc); }
+  .cta-devis__texte { max-width: 60ch; margin: 0; }
+  .cta-devis__panneau ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.4rem;
+    font-size: 1.1rem;
+    text-align: left;
+  }
+  .cta-devis__panneau li::before {
+    content: "•";
+    color: var(--rouge);
+    font-weight: 800;
+    margin-right: 0.6em;
+  }
+  .cta-devis__actions { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 0.9rem; }
+  @media (max-width: 800px) {
+    .cta-devis__actions { justify-content: center; width: 100%; }
+  }
+</style>

@@ -1,0 +1,178 @@
+---
+import { SITE } from '../data/site.ts';
+import { LIENS_VILLES } from '../data/zones.ts';
+import FlecheRonde from './FlecheRonde.astro';
+// Footer : 4 blocs (marque + badges de confiance, navigation, zones, contact)
+// et mention légale. Le bloc « Zones d'intervention » liste TOUTES les pages
+// villes du cocon (générées depuis LIENS_VILLES : une nouvelle ville y
+// apparaît toute seule), puis les hubs départementaux.
+---
+<footer class="pied">
+  <div class="conteneur pied__grille">
+    <div class="pied__bloc pied__marque">
+      <img
+        class="pied__logo"
+        src="/images/logo-placeholder-blanc.webp"
+        width="480"
+        height="190"
+        alt={`${SITE.nom} — ${SITE.slogan}`}
+        loading="lazy"
+      />
+      <p>{SITE.slogan}</p>
+      <p>{SITE.rue}<br />{SITE.cp} {SITE.ville}</p>
+
+      <ul class="pied__badges">
+        <li class="pied__badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 3 6v6c0 5 3.8 8.3 9 10 5.2-1.7 9-5 9-10V6l-9-4Z"/><path d="m8.5 12 2.3 2.3 4.7-4.7"/></svg>
+          <span><strong>Devis & déplacement</strong> gratuits</span>
+        </li>
+        <li class="pied__badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 3 6v6c0 5 3.8 8.3 9 10 5.2-1.7 9-5 9-10V6l-9-4Z"/><text x="12" y="15.5" text-anchor="middle" font-size="8" font-weight="700" fill="currentColor" stroke="none">10</text></svg>
+          <span><strong>Garantie décennale</strong></span>
+        </li>
+      </ul>
+    </div>
+
+    <nav class="pied__bloc" aria-label="Nos services">
+      <h2>Nos services</h2>
+      <ul>
+        <li><a href="/renovation-de-toiture-en-haute-garonne-31/">Rénovation de toiture</a></li>
+        <li><a href="/reparation-de-toiture-en-haute-garonne-31/">Réparation de toiture</a></li>
+        <li><a href="/pose-et-remplacement-de-gouttiere-31/">Pose de gouttières</a></li>
+        <li><a href="/nettoyage-de-toiture-en-haute-garonne-31/">Nettoyage & démoussage</a></li>
+        <li><a href="/etancheite-de-toiture-en-haute-garonne-31/">Étanchéité de toiture</a></li>
+        <li><a href="/recherche-de-fuite-de-toiture-en-haute-garonne-31/">Recherche de fuite</a></li>
+        <li><a href="/traitement-de-toiture-en-haute-garonne-31/">Traitement de toiture</a></li>
+      </ul>
+    </nav>
+
+    <nav class="pied__bloc" aria-label="Zones d'intervention">
+      <h2>Zones d’intervention</h2>
+      <ul>
+        {Object.entries(LIENS_VILLES).map(([ville, url]) => (
+          <li><a href={url}>Couvreur à {ville}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <nav class="pied__bloc" aria-label="Contact">
+      <h2>Contact</h2>
+      <ul>
+        <li>{SITE.horaires}</li>
+      </ul>
+      <div class="pied__actions">
+        <a href="/devis-gratuit/" class="btn btn--rouge pied__btn-intervention">Demander une intervention<FlecheRonde /></a>
+        <a href={SITE.telHref} class="btn btn--blanc">
+          <svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2.2"/><line x1="11" y1="18.3" x2="13" y2="18.3"/></svg>
+          {SITE.tel}
+        </a>
+        <a href={SITE.telFixeHref} class="btn btn--blanc">
+          <svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.72c.13.94.36 1.86.68 2.75a2 2 0 0 1-.45 2.11L8.1 9.9a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.89.32 1.81.55 2.75.68A2 2 0 0 1 22 16.92z"/></svg>
+          {SITE.telFixe}
+        </a>
+        <a href={`mailto:${SITE.email}`} class="btn btn--blanc pied__btn-mail">
+          <svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+          {SITE.email}
+        </a>
+      </div>
+    </nav>
+  </div>
+
+  <div class="pied__legal">
+    <a href="/plan-du-site/">Plan du site</a>
+    <span class="pied__legal-sep" aria-hidden="true">·</span>
+    <a href="/mentions-legales/">Mentions légales</a>
+    <span class="pied__legal-sep" aria-hidden="true">·</span>
+    <a href="/">Charles Lopez — Artisan couvreur</a>
+  </div>
+</footer>
+
+<style>
+  .pied {
+    background: var(--bleu-fonce);
+    color: rgba(255, 255, 255, 0.85);
+    margin-top: auto;
+    font-size: 0.93rem;
+    border-top: 3px solid var(--rouge);
+  }
+
+  /* Boutons de contact */
+  .pied__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.7rem;
+    margin-top: 1.1rem;
+  }
+  .pied__actions .btn { width: auto; max-width: 100%; white-space: nowrap; }
+  .pied__btn-mail { white-space: normal; word-break: break-word; font-size: 0.85rem; }
+  .pied__btn-intervention { font-size: 0.9rem; }
+
+  .pied__grille {
+    display: grid;
+    gap: 2.5rem;
+    padding-block: 3rem;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+  .pied__logo { display: block; height: 58px; width: auto; margin-bottom: 0.4rem; }
+  .pied__bloc h2 {
+    color: var(--blanc);
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 1rem;
+  }
+  .pied__bloc ul { list-style: none; padding: 0; display: grid; gap: 0.4rem; }
+  .pied a:not(.btn) { color: rgba(255, 255, 255, 0.85); text-decoration: none; }
+  .pied a:not(.btn):hover { color: var(--rouge); text-decoration: underline; }
+  .pied__marque p { margin-block: 0.5rem; }
+
+  /* Badges de confiance */
+  .pied__badges {
+    list-style: none;
+    padding: 0;
+    margin-top: 1.2rem;
+    display: grid;
+    gap: 0.7rem;
+  }
+  .pied__badge {
+    display: flex;
+    align-items: center;
+    gap: 0.7em;
+    font-size: 0.9rem;
+  }
+  .pied__badge svg { width: 2rem; height: 2rem; color: var(--rouge); flex-shrink: 0; }
+  .pied__badge strong { color: var(--blanc); font-weight: 700; }
+
+  .pied__tel { display: inline-flex; align-items: center; gap: 0.5em; }
+  .pied__tel .icone { color: var(--rouge); width: 1.1rem; height: 1.1rem; }
+
+  .pied__legal {
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.3rem 0.8rem;
+    padding: 1.2rem 1rem;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+  }
+  .pied__legal a { color: rgba(255, 255, 255, 0.8); text-decoration: none; }
+  .pied__legal a:hover { color: var(--rouge); text-decoration: underline; }
+  .pied__legal-sep { color: rgba(255, 255, 255, 0.35); }
+  .pied__legal span { display: inline-block; }
+
+  @media (max-width: 800px) {
+    .pied__actions { align-items: center; width: 100%; }
+    .pied__actions .btn { max-width: 100%; margin-inline: auto; }
+    .pied__grille { text-align: center; }
+    .pied__grille p { text-align: center; }
+    .pied__bloc h2 { text-align: center; }
+    .pied__bloc ul { justify-items: center; }
+    .pied__logo { margin-inline: auto; }
+    .pied__badges { justify-items: center; }
+    .pied__badge { justify-content: center; }
+    .pied__tel { justify-content: center; }
+  }
+</style>

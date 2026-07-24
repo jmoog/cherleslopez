@@ -1,0 +1,7 @@
+---
+import ServicePage from '../components/ServicePage.astro';
+import { getService } from '../data/services.ts';
+const service = getService('reparation-de-toiture-en-haute-garonne-31');
+if (!service) throw new Error('Service introuvable : reparation-de-toiture-en-haute-garonne-31');
+---
+<ServicePage service={service} />

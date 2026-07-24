@@ -1,0 +1,206 @@
+---
+// En-tête : fin bandeau d'accent en haut, en-tête blanc épuré avec filet
+// séparateur, logo à gauche, navigation à séparateurs verticaux, utilitaires
+// à droite (téléphone + bouton Devis). Menu tiroir sur mobile.
+// Nav desktop réduite aux pages principales ; le tiroir mobile liste tout.
+import { SITE } from '../data/site.ts';
+import FlecheRonde from './FlecheRonde.astro';
+---
+<div class="entete-accent" aria-hidden="true"></div>
+<header class="entete">
+  <div class="conteneur entete__int">
+    <a href="/" class="entete__marque" aria-label={`${SITE.nom} — retour à l'accueil`}>
+      <img
+        class="entete__logo"
+        src="/images/logo-placeholder.webp"
+        srcset="/images/logo-placeholder-400.webp 400w, /images/logo-placeholder.webp 800w"
+        sizes="(max-width: 900px) 170px, 210px"
+        width="800"
+        height="317"
+        alt={`${SITE.nom} — ${SITE.slogan}`}
+        fetchpriority="high"
+      />
+    </a>
+
+    <nav class="entete__nav" aria-label="Navigation principale">
+      <ul class="entete__liens">
+        <li><a href="/">Accueil</a></li>
+        <li><a href="/renovation-de-toiture-en-haute-garonne-31/">Rénovation</a></li>
+        <li><a href="/reparation-de-toiture-en-haute-garonne-31/">Réparation</a></li>
+        <li><a href="/nettoyage-de-toiture-en-haute-garonne-31/">Nettoyage</a></li>
+        <li><a href="/pose-et-remplacement-de-gouttiere-31/">Gouttières</a></li>
+        <li><a href="/etancheite-de-toiture-en-haute-garonne-31/">Étanchéité</a></li>
+      </ul>
+    </nav>
+
+    <div class="entete__actions">
+      <a href={SITE.telFixeHref} class="btn btn--rouge entete__devis">
+        <svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.72c.13.94.36 1.86.68 2.75a2 2 0 0 1-.45 2.11L8.1 9.9a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.89.32 1.81.55 2.75.68A2 2 0 0 1 22 16.92z"/></svg>
+        {SITE.telFixe}
+      </a>
+    </div>
+
+    <button class="entete__burger" type="button" aria-expanded="false" aria-controls="menu-mobile">
+      <span class="visuallyhidden">Ouvrir le menu</span>
+      <svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+  </div>
+
+  <div class="entete__drawer" id="menu-mobile" hidden>
+    <a href="/">Accueil</a>
+    <a href="/renovation-de-toiture-en-haute-garonne-31/">Rénovation de toiture</a>
+    <a href="/reparation-de-toiture-en-haute-garonne-31/">Réparation de toiture</a>
+    <a href="/pose-et-remplacement-de-gouttiere-31/">Pose de gouttières</a>
+    <a href="/nettoyage-de-toiture-en-haute-garonne-31/">Nettoyage & démoussage</a>
+    <a href="/etancheite-de-toiture-en-haute-garonne-31/">Étanchéité de toiture</a>
+    <a href="/recherche-de-fuite-de-toiture-en-haute-garonne-31/">Recherche de fuite</a>
+    <a href="/traitement-de-toiture-en-haute-garonne-31/">Traitement de toiture</a>
+    <a href="/plan-du-site/">Zones d'intervention</a>
+    <a href="/mentions-legales/">Mentions légales</a>
+    <a href={SITE.telFixeHref} class="btn btn--rouge">
+      <svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.72c.13.94.36 1.86.68 2.75a2 2 0 0 1-.45 2.11L8.1 9.9a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.89.32 1.81.55 2.75.68A2 2 0 0 1 22 16.92z"/></svg>
+      {SITE.telFixe}
+    </a>
+    <a href="/devis-gratuit/" class="entete__drawer-devis">Devis gratuit<FlecheRonde /></a>
+  </div>
+</header>
+
+<style>
+  /* Fin bandeau d'accent */
+  .entete-accent { height: 5px; background: var(--rouge); }
+
+  .entete {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--blanc);
+    border-bottom: 1px solid var(--gris-200);
+    transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
+  }
+  .entete--cachee { transform: translateY(-100%); }
+
+  .entete__int {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding-block: 0.85rem;
+  }
+
+  .entete__marque { flex-shrink: 0; display: inline-flex; }
+  .entete__logo { display: block; height: 81px; width: auto; }
+
+  /* Navigation à séparateurs verticaux */
+  .entete__nav { display: flex; }
+  .entete__liens {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .entete__liens li + li { border-left: 1px solid var(--gris-200); }
+  .entete__liens a {
+    display: block;
+    padding: 0.35rem 1.3rem;
+    color: var(--bleu);
+    font-weight: 500;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: color var(--transition);
+  }
+  .entete__liens a:hover { color: var(--rouge-fonce); }
+
+  /* Utilitaires à droite */
+  .entete__actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+  }
+  .entete__tel {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    color: var(--bleu);
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .entete__tel .icone { color: var(--rouge); width: 1.15rem; height: 1.15rem; }
+  .entete__tel:hover { color: var(--rouge-fonce); }
+  .entete__sep { width: 1px; height: 28px; background: var(--gris-200); }
+  .entete__devis { padding: 0.6em 1.3em; white-space: nowrap; }
+  .entete__devis-lien { display: inline-flex; align-items: center; gap: 0.4em; color: var(--bleu); font-weight: 600; text-decoration: none; white-space: nowrap; }
+  .entete__devis-lien:hover { color: var(--rouge-fonce); }
+  .entete__drawer-devis { display: inline-flex; align-items: center; justify-content: center; gap: 0.4em; margin-top: 0.9rem; color: var(--bleu); font-weight: 600; text-decoration: none; }
+  .entete__devis-lien .btn__fleche,
+  .entete__drawer-devis .btn__fleche { background: var(--rouge); color: var(--blanc); width: 1.55em; height: 1.55em; transition: background var(--transition), transform var(--transition); }
+  .entete__devis-lien:hover .btn__fleche,
+  .entete__drawer-devis:hover .btn__fleche { background: var(--rouge-fonce); transform: translateX(2px); }
+
+  /* Burger (mobile) */
+  .entete__burger {
+    display: none;
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: var(--bleu);
+    padding: 0.4rem;
+    cursor: pointer;
+  }
+  .entete__burger .icone { width: 1.9rem; height: 1.9rem; }
+
+  /* Tiroir mobile */
+  .entete__drawer { display: none; }
+  .entete__drawer:not([hidden]) {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem 1rem 1.3rem;
+    border-top: 1px solid var(--gris-200);
+  }
+  .entete__drawer a:not(.btn) {
+    padding: 0.95em 0.2em;
+    color: var(--bleu);
+    font-weight: 600;
+    font-size: 1.05rem;
+    text-decoration: none;
+    border-bottom: 1px solid var(--gris-100);
+  }
+  .entete__drawer-tel { display: flex; align-items: center; gap: 0.5em; }
+  .entete__drawer-tel .icone { color: var(--rouge); width: 1.15rem; height: 1.15rem; }
+  .entete__drawer .btn { margin-top: 1rem; width: auto; align-self: flex-start; }
+
+  /* Bascule desktop / mobile */
+  @media (max-width: 900px) {
+    .entete__nav,
+    .entete__actions { display: none; }
+    .entete__burger { display: inline-flex; }
+    .entete__logo { height: 62px; }
+  }
+</style>
+
+<script>
+  const burger = document.querySelector('.entete__burger');
+  const drawer = document.getElementById('menu-mobile');
+  burger?.addEventListener('click', () => {
+    const ouvert = drawer?.hasAttribute('hidden');
+    if (ouvert) drawer?.removeAttribute('hidden');
+    else drawer?.setAttribute('hidden', '');
+    burger.setAttribute('aria-expanded', String(Boolean(ouvert)));
+  });
+
+  const entete = document.querySelector('.entete');
+  const mobile = window.matchMedia('(max-width: 900px)');
+  let tick = false;
+  window.addEventListener('scroll', () => {
+    if (tick) return;
+    tick = true;
+    requestAnimationFrame(() => {
+      const cacher = mobile.matches && window.scrollY > 900 && drawer?.hasAttribute('hidden');
+      entete?.classList.toggle('entete--cachee', Boolean(cacher));
+      tick = false;
+    });
+  }, { passive: true });
+</script>

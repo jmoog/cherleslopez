@@ -1,0 +1,77 @@
+---
+// Section « Avis clients » réutilisable — affiche `count` avis à partir de `start`
+// (bouclage), avec le bouton « Laisser un avis Google ». Varier `start` par page.
+import { SITE } from '../data/site.ts';
+import { pickAvis } from '../data/avis.ts';
+
+export interface Props {
+  start?: number;
+  count?: number;
+  titre?: string;
+  intro?: boolean;
+}
+const { start = 0, count = 4, titre = 'Ils m’ont fait confiance', intro = true } = Astro.props;
+const liste = pickAvis(start, count);
+
+const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.26 6.9.6-5.2 4.53 1.55 6.75L12 17.77 5.85 20.7 7.4 13.95 2.2 9.42l6.9-.6L12 2z"/></svg>';
+const STARS5 = STAR.repeat(5);
+const GOOGLE_G = '<svg class="avis-g" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.28-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>';
+---
+<section class="section section--gris avis-sec">
+  <div class="conteneur">
+    <h2>{titre}</h2>
+    {intro && (
+      <p class="avis-intro">
+        <span class="avis-intro__stars" set:html={STARS5} />
+        <strong>5/5</strong> — mes clients recommandent mon travail sur Google et PagesJaunes.
+      </p>
+    )}
+    <div class="avis-grille">
+      {liste.map((a) => (
+        <article class="avis-card">
+          <div class="avis-card__stars" set:html={STARS5} aria-label={`Note ${a.note} sur 5`} />
+          <p class="avis-card__texte">« {a.texte} »</p>
+          <div class="avis-card__pied">
+            <div class="avis-card__auteur">
+              <span class="avis-card__nom">{a.nom}</span>
+              <span class="avis-card__date">{a.date}</span>
+            </div>
+            {a.source === 'google' ? (
+              <span class="avis-badge avis-badge--google"><Fragment set:html={GOOGLE_G} /> Google</span>
+            ) : (
+              <span class="avis-badge avis-badge--pj">PagesJaunes</span>
+            )}
+          </div>
+        </article>
+      ))}
+    </div>
+    <div class="avis-cta">
+      <a href={SITE.googleAvis} target="_blank" rel="noopener" class="btn btn--rouge">
+        <Fragment set:html={GOOGLE_G} /> Laisser un avis Google
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .avis-intro { text-align: center; color: var(--bleu); margin: 0.8rem auto 2.2rem; font-size: 1.1rem; }
+  .avis-intro strong { color: var(--bleu); }
+  .avis-intro__stars { display: inline-flex; gap: 0.1em; vertical-align: middle; margin-right: 0.4em; }
+  .avis-intro__stars :global(svg) { width: 1.25em; height: 1.25em; fill: var(--etoile); }
+  .avis-grille { display: grid; gap: 1.4rem; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); }
+  @media (min-width: 900px) { .avis-grille { grid-template-columns: repeat(4, 1fr); } }
+  .avis-card { background: var(--blanc); border: 1px solid var(--gris-200); border-radius: 16px; padding: 1.4rem 1.5rem; display: flex; flex-direction: column; gap: 0.9rem; box-shadow: var(--ombre); }
+  .avis-card__stars { display: inline-flex; gap: 0.12em; }
+  .avis-card__stars :global(svg) { width: 1.1rem; height: 1.1rem; fill: var(--etoile); }
+  .avis-card__texte { color: var(--bleu); margin: 0; flex: 1; line-height: 1.55; font-size: 0.98rem; }
+  .avis-card__pied { display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; padding-top: 0.6rem; border-top: 1px solid var(--gris-100); }
+  .avis-card__auteur { display: flex; flex-direction: column; }
+  .avis-card__nom { font-weight: 700; color: var(--bleu); }
+  .avis-card__date { font-size: 0.85rem; color: var(--gris-500); }
+  .avis-badge { display: inline-flex; align-items: center; gap: 0.35em; font-size: 0.8rem; font-weight: 700; white-space: nowrap; }
+  .avis-badge :global(svg.avis-g) { width: 1.05rem; height: 1.05rem; }
+  .avis-badge--google { color: var(--gris-700); }
+  .avis-badge--pj { background: #ffcc00; color: #1a1a1a; border-radius: 6px; padding: 0.25em 0.6em; }
+  .avis-cta { text-align: center; margin-top: 2.4rem; }
+  .avis-cta .btn :global(svg.avis-g) { width: 1.15rem; height: 1.15rem; background: #fff; border-radius: 50%; padding: 1px; }
+</style>
